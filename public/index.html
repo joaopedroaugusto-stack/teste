@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat da Equipe</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        #message { width: 80%; }
+        #send { width: 18%; }
+    </style>
+</head>
+<body>
+    <h1>Chat da Equipe</h1>
+    <div id="chat"></div>
+    <input id="message" type="text" placeholder="Digite sua mensagem..." />
+    <button id="send">Enviar</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const chatDiv = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+
+        sendButton.addEventListener('click', () => {
+            const msg = messageInput.value;
+            socket.emit('chatMessage', msg);
+            messageInput.value = '';
+        });
+
+        socket.on('chatMessage', (msg) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = msg;
+            chatDiv.appendChild(msgDiv);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        });
+    </script>
+</body>
+</html>
